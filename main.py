@@ -10,8 +10,12 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    )
+logger.warning("Starting bot")
 bot = Bot(token=config.TG_API_TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
@@ -39,6 +43,9 @@ async def callback_answering_test(callback_query: types.CallbackQuery):
                                     message_id=callback_query.message.message_id)
         await bot.answer_callback_query(callback_query.id)
     else:
+        answers = (await state.get_data())['answers']
+        print(answers)
+        await state.reset_state()
         await bot.edit_message_text(text=f"Вы прошли тест",
                                     chat_id=callback_query.message.chat.id,
                                     message_id=callback_query.message.message_id)
