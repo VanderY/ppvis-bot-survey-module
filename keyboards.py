@@ -13,3 +13,16 @@ def get_answers_keyboard(question: dict, question_number: int) -> InlineKeyboard
                                                                                      f"{answer}"))
     answers_kb.add(*answers)
     return answers_kb
+
+
+def get_professor_keyboard() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardMarkup(row_width=2)
+    buttons = [InlineKeyboardButton(f"Запустить опрос", callback_data=f"start"),
+               InlineKeyboardButton(f"Проверить вопросы", callback_data=f"check")]
+    return kb.add(*buttons)
+
+
+def start_survey_keyboard() -> InlineKeyboardMarkup:
+    answers_kb = InlineKeyboardMarkup(row_width=2)
+    start_btn = InlineKeyboardButton(f"Начать тест", callback_data=f"start;0")
+    return answers_kb.add(start_btn)

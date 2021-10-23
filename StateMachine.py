@@ -1,11 +1,8 @@
+from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.utils.helper import Helper, HelperMode, ListItem
 
 
-class StateMachine(Helper):
-    mode = HelperMode.snake_case
-
-    ANSWERING_TEST = ListItem()
+class StateMachine(StatesGroup):
+    answering_test = State()
 
 
-if __name__ == '__main__':
-    print(StateMachine.all())

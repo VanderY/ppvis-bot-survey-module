@@ -16,11 +16,11 @@ def choose_answer(test: list) -> list:
     return answers
 
 
-def get_test():
+def get_test(sheet_name='Тест'):
     gc = gspread.service_account(filename='credentials.json')
     sh = gc.open("Test_survey_bot")
 
-    worksheet = sh.worksheet('Тест')
+    worksheet = sh.worksheet(sheet_name)
     # answers = choose_answer(worksheet.get_all_records())
     return worksheet.get_all_records()
 
