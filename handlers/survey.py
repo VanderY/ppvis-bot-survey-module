@@ -10,6 +10,7 @@ from StateMachine import StateMachine
 from handlers.common import GeneralStates
 from handlers.professor import ProfessorStates
 from handlers.student import StudentStates
+from spreadsheets import add_result_to_worksheet
 
 
 async def callback_answering_test(callback_query: types.CallbackQuery, state: FSMContext):
@@ -39,12 +40,26 @@ async def callback_answering_test(callback_query: types.CallbackQuery, state: FS
             await callback_query.answer()
         else:
             answers = (await state.get_data())['answers']
+
             correct_answers = 0
+
             for answer in answers:
                 if answer['is_correct']:
                     correct_answers += 1
+
+
             print(answers)
             print(f"{correct_answers}/{len(answers)}")
+
+            # ВПИСАТЬ в test_name имя выбранного теста(Вместо 'Test')!
+            test_name = 'Тест' + ' result'
+
+            # В user_data положить фул имя и группу студента из модуля регистрации
+            user_data = callback_query.message.chat.id
+
+            add_result_to_worksheet(test_name, user_data, answers)
+
+
             await state.reset_state()
             await GeneralStates.student.set()
             await callback_query.message.edit_text(text=f"Вы прошли тест на {correct_answers}/{len(answers)}")
@@ -53,4 +68,3 @@ async def callback_answering_test(callback_query: types.CallbackQuery, state: FS
 
 def register_handlers_survey(dp: Dispatcher):
     dp.register_callback_query_handler(callback_answering_test, lambda c: c.data, state=GeneralStates.student)
-    # dp.register_callback_query_handler(check_survey, lambda c: c.data, state=ProfessorStates.checking_survey)
