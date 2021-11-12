@@ -24,7 +24,8 @@ async def menu(message: types.Message, state: FSMContext):
 
 
 async def sheet_name_message(callback_query: types.CallbackQuery, state: FSMContext):
-    await callback_query.message.edit_text("Напишите название листа в Spreadsheets")
+    kb = keyboards.get_tests_keyboard()
+    await callback_query.message.answer(text="Список доступных тестов", reply_markup=kb)
     if callback_query.data.startswith("check"):
         await ProfessorStates.checking_survey.set()
     elif callback_query.data.startswith("start"):
@@ -76,9 +77,15 @@ async def start_survey(message: types.Message, state: FSMContext):
         await GeneralStates.professor.set()
 
 
+async def handle_test_name(callback_query: types.CallbackQuery, state: FSMContext):
+    await callback_query.answer("rjkj,jr gjdtcbkcz")
+
+
 def register_handlers_professor(dp: Dispatcher):
     # dp.register_message_handler(survey, commands=['menu'], state=GeneralStates.professor)
     dp.register_message_handler(menu, commands=['menu'], state=GeneralStates.professor)
+    dp.register_callback_query_handler(handle_test_name, lambda c: c.data.startswith("test"),
+                                       state=ProfessorStates.checking_survey)
     dp.register_callback_query_handler(sheet_name_message, state=GeneralStates.professor)
     dp.register_message_handler(check_survey, state=ProfessorStates.checking_survey)
     dp.register_message_handler(start_survey, state=ProfessorStates.start_survey)

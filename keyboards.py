@@ -1,5 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+import spreadsheets
+
 
 def get_answers_keyboard(question: dict, question_number: int) -> InlineKeyboardMarkup:
     answers_kb = InlineKeyboardMarkup(row_width=2)
@@ -19,6 +21,16 @@ def get_professor_keyboard() -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(row_width=2)
     buttons = [InlineKeyboardButton(f"Запустить опрос", callback_data=f"start"),
                InlineKeyboardButton(f"Проверить вопросы", callback_data=f"check")]
+    return kb.add(*buttons)
+
+
+def get_tests_keyboard() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardMarkup(row_width=1)
+    buttons = []
+    tests = spreadsheets.get_all_tests()
+    for test in tests:
+        if "result" not in test.title:
+            buttons.append(InlineKeyboardButton(f"{test.title}", callback_data=f"test;{test.title}"))
     return kb.add(*buttons)
 
 
